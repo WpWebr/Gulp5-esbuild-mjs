@@ -1,0 +1,59 @@
+{
+  "extends": [
+    "stylelint-config-standard-scss",
+    "stylelint-config-prettier-scss"
+  ],
+  "plugins": [
+    "stylelint-order",
+    "stylelint-selector-bem-pattern"
+  ],
+  "rules": {
+    "plugin/selector-bem-pattern": {
+      "componentName": "[a-z]+(?:-[a-z]+)*",
+      "preset": "bem",
+      "componentSelectors": {
+        "initial": "^\\.{component}(?:__[a-z0-9-]+)?(?:_[a-z0-9-]+)?$"
+      }
+    },
+    "order/properties-order": [
+      [
+        "position",
+        "top",
+        "right",
+        "bottom",
+        "left",
+        "z-index",
+        "display",
+        "flex",
+        "flex-direction",
+        "justify-content",
+        "align-items",
+        "width",
+        "height",
+        "min-width",
+        "max-width",
+        "min-height",
+        "max-height",
+        "margin",
+        "padding",
+        "font",
+        "font-family",
+        "font-size",
+        "font-weight",
+        "line-height",
+        "text-align",
+        "color",
+        "background",
+        "border",
+        "border-radius",
+        "box-shadow",
+        "transition",
+        "transform",
+        "animation"
+      ],
+      {
+        "unspecified": "bottomAlphabetical"
+      }
+    ]
+  }
+}
