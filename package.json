@@ -62,5 +62,8 @@
     "through2": "4.0.2",
     "vinyl-ftp": "0.6.1",
     "webp-converter": "2.2.3"
+  },
+  "dependencies": {
+    "glob": "^13.0.0"
   }
 }

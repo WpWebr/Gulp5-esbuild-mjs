@@ -17,6 +17,11 @@ import { info } from './gulp/tasks/info.mjs'; // информация о зап�
 import { addZip } from './gulp/tasks/zip.mjs'; // создание ZIP
 // import { deploy } from './gulp/tasks/ftp.mjs'; // FTP
 import { deploy } from './gulp/tasks/ftp.mjs'; // FTP
+import { validateComponents } from './gulp/tasks/validate-components.mjs';
+import { generateComponentsJs } from './gulp/tasks/components-js.mjs';
+import { generateComponentsScss } from './gulp/tasks/components-scss.mjs';
+import { validateScssDeps } from './gulp/tasks/validate-scss-deps.mjs';
+
 // глобальная переменная
 global.add = {
   plugins,      // плагины 
@@ -42,6 +47,10 @@ await init();
 
 // Отслеживание изменений и удалений
 function watchFiles() {
+  plugins.gulp.watch(
+    plugins.path.join(add.paths.html.components, '**/*'),
+    plugins.gulp.series(validateComponents, validateScssDeps, generateComponentsJs, generateComponentsScss)
+  );
   plugins.gulp.watch(paths.styles.watch, styles);
   plugins.gulp.watch(paths.scripts.watch, scripts);
   // Следим за добавлением изображений - обрабатываем и добавляем соответствующие файлы в dist/img и src/img_min
@@ -119,6 +128,10 @@ const copyAll = plugins.gulp.series(
 // Основные задачи
 const build = plugins.gulp.series(
   createDirs,
+  validateComponents,
+  validateScssDeps,
+  generateComponentsJs,
+  generateComponentsScss,
   plugins.gulp.parallel(styles, scripts, html),
   processImages,
   svgSpr,

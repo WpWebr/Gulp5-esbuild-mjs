@@ -17,6 +17,10 @@ export const paths = {
   setings: `${prodject}/setings/setings.mjs`,// настройки
   ftp: `${prodject}/setings/ftp.mjs`,// настройки ftp
   spriteName,
+  scss: {
+    src: `${src}/scss`,
+    entry: `${src}/scss/style.scss`,
+  },
   styles: {
     // src: `${src}/scss/style.scss`,
     src: `${src}/scss/*.scss`,
@@ -24,6 +28,7 @@ export const paths = {
     dest: `${dest}/css`,
   },
   scripts: {
+    js: `${src}/js`,
     src: `${src}/js/app.js`,
     entry: `${src}/js/app.js`,
     watch: `${src}/js/**/*.{mjs,js}`,
@@ -66,7 +71,9 @@ export const paths = {
     src: `${src}/_robots/robots.txt`,
   },
   html: {
-    src: `${src}/*.html`,
+    // src: `${src}/*.html`,
+    src: `${src}/html/pages/*.html`,
+    components: `${src}/html/components`,
     watch: `${src}/**/*.html`,
     dest: `${dest}`,
   },

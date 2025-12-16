@@ -1,5 +1,7 @@
 import gulp from 'gulp';
 import esbuild from 'esbuild'; // обработка js вместо webpack
+import { glob } from 'glob';
+// import colors from 'picocolors';
 import * as dartSass from 'sass';
 import gulpSass from 'gulp-sass';
 import autoprefixer from 'gulp-autoprefixer'; // для css
@@ -46,6 +48,7 @@ const server = browserSync.create();
 export const plugins = {
   gulp,
   esbuild,
+  glob,
   sass,
   autoprefixer,
   cleanCSS,
