@@ -21,15 +21,29 @@ export const setings = {
   validateScssDeps: true,      // 🔍 проверка @use-графа // при validateComponents: true
   scssDepsStrict: false,       // true = error, false = warning // при validateComponents: true
   lazyInitMode: 1, // Lazy-инициализация компонентов
-  /*
-    1 — включено по умолчанию
-        ❌ исключения: data-no-lazy
+  // 1 — включено по умолчанию    
+  //     ❌ исключения: data-no-lazy
 
-    2 — выключено по умолчанию
-        ✅ исключения: data-lazy
+  //  2 — выключено по умолчанию
+  //      ✅ исключения: data-lazy
 
-    3 — всегда выключено
-        (data-атрибуты игнорируются)
-  */
+  //  3 — всегда выключено
+  //      (data-атрибуты игнорируются)
+  generateScssDepsGraph: true,       // 🧠 генерация .dot
+  scssDepsGraphPath: 'scss-deps.dot', // имя файла (без пути)
+  // Как посмотреть граф (вне Gulp):
+  // dot -Tpng scss-deps.dot -o scss-deps.png
+  // или
+  // dot -Tsvg scss-deps.dot -o scss-deps.svg
+  generateComponentDocs: true,
+  componentDocsFile: 'components.json',
+  validateComponentDeps: true,
+  validateComponentCycles: true,
+  validateScssDeps: true,
+  generateScssDepsGraph: true,
+  scssDepsGraphFile: 'scss-deps.dot',
+  generateScssIndex: true,
+  scssIndexFile: '_index.scss',
+  smartScssBuild: true
 
 }

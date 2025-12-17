@@ -26,9 +26,7 @@ export function generateComponentsJs(done) {
     if (!add.plugins.fs.existsSync(jsFile)) return;
 
     const varName = `init_${component.replace(/-/g, '_')}`;
-    console.log(varName);
     const importPath = `../html/components/${component}/${component}.js`;
-    console.log(importPath);
 
     imports.push(`import ${varName} from '${importPath}';`);
 

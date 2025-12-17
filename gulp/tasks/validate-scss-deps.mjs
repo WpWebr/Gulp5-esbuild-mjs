@@ -1,3 +1,5 @@
+import { extractDeps } from '../utils/component-md.mjs';
+
 export function validateScssDeps(done) {
   if (!add.setings.validateScssDeps) {
     done();
@@ -5,87 +7,113 @@ export function validateScssDeps(done) {
   }
 
   const { fs, path, colors } = add.plugins;
-
   const componentsDir = add.paths.html.components;
-  const graph = {};
+
+  const graph = [];
   let hasErrors = false;
 
-  const componentNames = fs
-    .readdirSync(componentsDir)
+  const components = fs.readdirSync(componentsDir)
     .filter(name =>
       fs.statSync(path.join(componentsDir, name)).isDirectory()
     );
 
-  const componentSet = new Set(componentNames);
-
-  componentNames.forEach(component => {
-    const scssFile = path.join(
-      componentsDir,
-      component,
-      `${component}.scss`
-    );
+  components.forEach(component => {
+    const componentPath = path.join(componentsDir, component);
+    const scssFile = path.join(componentPath, `${component}.scss`);
+    const mdFile = path.join(componentPath, `${component}.md`);
 
     if (!fs.existsSync(scssFile)) return;
 
-    const content = fs.readFileSync(scssFile, 'utf8');
+    const scssContent = fs.readFileSync(scssFile, 'utf8');
+    const scssUses = extractScssUses(scssContent);
 
-    const uses = [...content.matchAll(/@use\s+['"](.+?)['"]/g)]
-      .map(m => m[1]);
+    const mdDeps = fs.existsSync(mdFile)
+      ? extractDeps(fs.readFileSync(mdFile, 'utf8'))
+      : [];
 
-    graph[component] = [];
+    // SCSS → MD
+    scssUses.forEach(dep => {
+      if (!mdDeps.includes(dep)) {
+        console.log(
+          colors.red(
+            `✖ ${component}.scss: @use "${dep}" не описан в ${component}.md`
+          )
+        );
+        hasErrors = true;
+      }
+    });
 
-    uses.forEach(usePath => {
-      const parts = usePath.split('/');
+    // MD → SCSS
+    mdDeps.forEach(dep => {
+      if (!scssUses.includes(dep)) {
+        console.log(
+          colors.yellow(
+            `⚠ ${component}: зависимость "${dep}" описана, но не подключена в SCSS`
+          )
+        );
+      }
+    });
 
-      parts.forEach(part => {
-        if (componentSet.has(part)) {
-          graph[component].push(part);
-
-          const msg = `SCSS dependency violation: ${component} → ${part}`;
-
-          if (add.setings.scssDepsStrict) {
-            console.log(colors.red(`✖ ${msg}`));
-            hasErrors = true;
-          } else {
-            console.log(colors.yellow(`⚠ ${msg}`));
-          }
-        }
-      });
+    scssUses.forEach(dep => {
+      graph.push([component, dep]);
     });
   });
 
-  // 🔁 проверка циклов
-  const visited = new Set();
-  const stack = new Set();
-
-  function dfs(node) {
-    if (stack.has(node)) return true;
-    if (visited.has(node)) return false;
-
-    visited.add(node);
-    stack.add(node);
-
-    for (const dep of graph[node] || []) {
-      if (dfs(dep)) return true;
-    }
-
-    stack.delete(node);
-    return false;
-  }
-
-  for (const node in graph) {
-    if (dfs(node)) {
-      console.log(colors.red(`✖ SCSS circular dependency detected at "${node}"`));
-      hasErrors = true;
-      break;
-    }
-  }
-
   if (hasErrors) {
-    console.log(colors.red('\nSCSS dependency validation failed\n'));
+    console.log(colors.red('\n✖ SCSS dependency validation failed\n'));
     process.exit(1);
   }
 
-  console.log(colors.green('\n✓ SCSS dependency graph is valid\n'));
+  if (add.setings.generateScssDepsGraph) {
+    writeDotGraph(graph);
+  }
+
+  console.log(colors.green('✓ SCSS dependencies are valid\n'));
   done();
+}
+
+// Парсер @use
+function extractScssUses(content) {
+  const uses = [];
+
+  const regex = /@use\s+['"](.+?)['"]/g;
+  let match;
+
+  while ((match = regex.exec(content))) {
+    const path = match[1];
+
+    // ../icon/icon → icon
+    const parts = path.split('/');
+    uses.push(parts[parts.length - 1]);
+  }
+
+  return uses;
+}
+
+// Генерация.dot(Graphviz)
+function writeDotGraph(edges) {
+  const { fs, path } = add.plugins;
+
+  const outFile = path.join(
+    add.paths.dest,
+    add.setings.scssDepsGraphFile
+  );
+
+  const outDir = path.dirname(outFile);
+  if (!fs.existsSync(outDir)) {
+    fs.mkdirSync(outDir, { recursive: true });
+  }
+
+  const lines = [
+    'digraph scss_deps {',
+    '  rankdir=LR;'
+  ];
+
+  edges.forEach(([from, to]) => {
+    lines.push(`  "${from}" -> "${to}";`);
+  });
+
+  lines.push('}');
+
+  fs.writeFileSync(outFile, lines.join('\n'), 'utf8');
 }

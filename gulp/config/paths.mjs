@@ -1,4 +1,4 @@
-// import { setings } from '../setings/setings.mjs';
+import { setings } from '../setings/setings.mjs'; // настройки по умолчанию
 import { setFolders } from './setings_folders.mjs'; // папки текущего проекта
 
 const prodject = `${setFolders.allprojects}/${setFolders.name}`;// текущий проект
@@ -22,7 +22,8 @@ export const paths = {
     entry: `${src}/scss/style.scss`,
   },
   styles: {
-    // src: `${src}/scss/style.scss`,
+    index: `${src}/scss/${setings.scssIndexFile}`,
+    scss: `${src}/scss`,
     src: `${src}/scss/*.scss`,
     watch: `${src}/scss/**/*.scss`,
     dest: `${dest}/css`,
