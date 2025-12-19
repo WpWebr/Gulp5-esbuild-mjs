@@ -43,11 +43,11 @@ export function validateComponentCycles(done) {
   }
 
   if (hasCycle) {
-    console.log(colors.red('\n✖ Cyclic component dependencies detected\n'));
+    console.log(colors.red('\n✖ Обнаружены циклические зависимости компонентов\n'));
     process.exit(1);
   }
 
-  console.log(colors.green('✓ No cyclic component dependencies\n'));
+  console.log(colors.green('✓ Отсутствие циклических зависимостей компонентов\n'));
   done();
 }
 
@@ -86,7 +86,7 @@ function printCycle(stack, target, colors) {
   const cycle = stack.slice(cycleStart).concat(target);
 
   console.log(
-    colors.red('✖ Cyclic dependency detected:')
+    colors.red('✖ Обнаружена циклическая зависимость:')
   );
   console.log(
     colors.yellow(

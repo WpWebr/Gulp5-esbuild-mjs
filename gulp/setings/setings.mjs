@@ -44,6 +44,6 @@ export const setings = {
   scssDepsGraphFile: 'scss-deps.dot',
   generateScssIndex: true,
   scssIndexFile: '_index.scss',
-  smartScssBuild: true
+  smartScssBuild: true,
 
 }

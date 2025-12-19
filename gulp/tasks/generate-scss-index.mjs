@@ -1,6 +1,7 @@
 import { extractDeps } from '../utils/component-md.mjs';
 import { collectUsedComponents } from '../utils/collect-used-components.mjs';
 import { expandWithDeps } from '../utils/expand-with-deps.mjs';
+import { topoSort } from '../utils/topo-sort.mjs';
 
 export function generateScssIndex(done) {
   if (!add.setings.generateScssIndex) {
@@ -49,8 +50,8 @@ export function generateScssIndex(done) {
 
   // 5. Генерация index.scss
   const lines = [
-    '/* AUTO-GENERATED FILE */',
-    '/* SMART SCSS BUILD */',
+    '/* АВТОМАТИЧЕСКИ СГЕНЕРИРОВАННЫЙ ФАЙЛ */',
+    '/* УМНАЯ СБОРКА SCSS */',
     ''
   ];
 
@@ -76,21 +77,4 @@ export function generateScssIndex(done) {
   );
 
   done();
-}
-
-function topoSort(graph) {
-  const visited = new Set();
-  const result = [];
-
-  function visit(node) {
-    if (visited.has(node)) return;
-    visited.add(node);
-
-    (graph.get(node) || []).forEach(visit);
-    result.push(node);
-  }
-
-  graph.forEach((_, node) => visit(node));
-
-  return result;
 }

@@ -33,6 +33,10 @@ export function validateScssDeps(done) {
 
     // SCSS → MD
     scssUses.forEach(dep => {
+      if (!isComponentDep(dep, components)) {
+        return; // ⬅ base / внешний scss — игнорируем
+      }
+
       if (!mdDeps.includes(dep)) {
         console.log(
           colors.red(
@@ -43,8 +47,11 @@ export function validateScssDeps(done) {
       }
     });
 
+
     // MD → SCSS
     mdDeps.forEach(dep => {
+      if (!isComponentDep(dep, components)) return;
+
       if (!scssUses.includes(dep)) {
         console.log(
           colors.yellow(
@@ -55,12 +62,15 @@ export function validateScssDeps(done) {
     });
 
     scssUses.forEach(dep => {
-      graph.push([component, dep]);
+      if (isComponentDep(dep, components)) {
+        graph.push([component, dep]);
+      }
     });
+
   });
 
   if (hasErrors) {
-    console.log(colors.red('\n✖ SCSS dependency validation failed\n'));
+    console.log(colors.red('\n✖ Проверка зависимостей SCSS завершилась неудачей\n'));
     process.exit(1);
   }
 
@@ -68,7 +78,7 @@ export function validateScssDeps(done) {
     writeDotGraph(graph);
   }
 
-  console.log(colors.green('✓ SCSS dependencies are valid\n'));
+  console.log(colors.green('✓ Зависимости SCSS правильные\n'));
   done();
 }
 
@@ -88,6 +98,10 @@ function extractScssUses(content) {
   }
 
   return uses;
+}
+
+function isComponentDep(dep, components) {
+  return components.includes(dep);
 }
 
 // Генерация.dot(Graphviz)

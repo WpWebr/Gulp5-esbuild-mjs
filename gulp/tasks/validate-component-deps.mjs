@@ -55,13 +55,13 @@ export function validateComponentDeps(done) {
 
   if (hasErrors) {
     console.log(
-      colors.red('\nComponent dependency validation failed\n')
+      colors.red('\nПроверка зависимостей компонентов завершилась неудачей.\n')
     );
     process.exit(1);
   }
 
   console.log(
-    colors.green('✓ Component dependencies are valid\n')
+    colors.green('✓ Зависимости компонентов допустимы\n')
   );
 
   done();

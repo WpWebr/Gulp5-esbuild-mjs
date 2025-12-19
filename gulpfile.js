@@ -26,7 +26,6 @@ import { validateComponentDeps } from './gulp/tasks/validate-component-deps.mjs'
 import { validateComponentCycles } from './gulp/tasks/validate-component-cycles.mjs';
 import { generateScssIndex } from './gulp/tasks/generate-scss-index.mjs';
 
-
 // глобальная переменная
 global.add = {
   plugins,      // плагины 

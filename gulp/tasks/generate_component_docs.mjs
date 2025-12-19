@@ -58,7 +58,7 @@ export function generateComponentDocs(done) {
   fs.writeFileSync(outFile, JSON.stringify(docs, null, 2), 'utf8');
 
   console.log(
-    colors.green(`✓ Component docs generated: ${outFile}\n`)
+    colors.green(`✓ Документация по компоненту сгенерирована: ${outFile}\n`)
   );
 
   done();

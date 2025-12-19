@@ -657,6 +657,20 @@ Plain text
 (Находясь рядом с файлом scss-deps.dot):
 dot -Tsvg scss-deps.dot -o scss-deps.svg
 
+### Подключение переменных (алиас)
+```
+@use "../../scss/base/variables" as v;
+@use "../../scss/base/mixins" as m;
+
+.button {
+  font-size: v.$font-size-base;
+
+  @include m.media(md) {
+    font-size: v.$font-size-lg;
+  }
+}
+```
+
 ## Документация компонентов
 
 Каждый компонент может содержать блок комментариев
